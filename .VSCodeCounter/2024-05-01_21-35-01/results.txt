@@ -1,0 +1,46 @@
+Date : 2024-05-01 21:35:01
+Directory : c:\Users\Павел\Desktop\ProfUnion\obj
+Total : 14 files,  6914 codes, 22 comments, 14 blanks, all 6950 lines
+
+Languages
++------------+------------+------------+------------+------------+------------+
+| language   | files      | code       | comment    | blank      | total      |
++------------+------------+------------+------------+------------+------------+
+| JSON       |          3 |      6,794 |          0 |          0 |      6,794 |
+| MSBuild    |          6 |         71 |          0 |          1 |         72 |
+| C#         |          4 |         32 |         22 |         12 |         66 |
+| Properties |          1 |         17 |          0 |          1 |         18 |
++------------+------------+------------+------------+------------+------------+
+
+Directories
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                          | files      | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                             |         14 |      6,914 |         22 |         14 |      6,950 |
+| . (Files)                                                                                                     |          5 |      6,845 |          0 |          1 |      6,846 |
+| Debug                                                                                                         |          9 |         69 |         22 |         13 |        104 |
+| Debug\net7.0                                                                                                  |          9 |         69 |         22 |         13 |        104 |
+| Debug\net7.0 (Files)                                                                                          |          6 |         60 |         22 |         13 |         95 |
+| Debug\net7.0\staticwebassets                                                                                  |          3 |          9 |          0 |          0 |          9 |
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| filename                                                                                                      | language   | code       | comment    | blank      | total      |
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| c:\Users\Павел\Desktop\ProfUnion\obj\Debug\net7.0\.NETCoreApp,Version=v7.0.AssemblyAttributes.cs              | C#         |          3 |          1 |          1 |          5 |
+| c:\Users\Павел\Desktop\ProfUnion\obj\Debug\net7.0\Profunion.AssemblyInfo.cs                                   | C#         |          9 |         10 |          5 |         24 |
+| c:\Users\Павел\Desktop\ProfUnion\obj\Debug\net7.0\Profunion.GeneratedMSBuildEditorConfig.editorconfig         | Properties |         17 |          0 |          1 |         18 |
+| c:\Users\Павел\Desktop\ProfUnion\obj\Debug\net7.0\Profunion.GlobalUsings.g.cs                                 | C#         |         16 |          1 |          1 |         18 |
+| c:\Users\Павел\Desktop\ProfUnion\obj\Debug\net7.0\Profunion.MvcApplicationPartsAssemblyInfo.cs                | C#         |          4 |         10 |          5 |         19 |
+| c:\Users\Павел\Desktop\ProfUnion\obj\Debug\net7.0\staticwebassets.build.json                                  | JSON       |         11 |          0 |          0 |         11 |
+| c:\Users\Павел\Desktop\ProfUnion\obj\Debug\net7.0\staticwebassets\msbuild.build.Profunion.props               | MSBuild    |          3 |          0 |          0 |          3 |
+| c:\Users\Павел\Desktop\ProfUnion\obj\Debug\net7.0\staticwebassets\msbuild.buildMultiTargeting.Profunion.props | MSBuild    |          3 |          0 |          0 |          3 |
+| c:\Users\Павел\Desktop\ProfUnion\obj\Debug\net7.0\staticwebassets\msbuild.buildTransitive.Profunion.props     | MSBuild    |          3 |          0 |          0 |          3 |
+| c:\Users\Павел\Desktop\ProfUnion\obj\Profunion.csproj.EntityFrameworkCore.targets                             | MSBuild    |         28 |          0 |          1 |         29 |
+| c:\Users\Павел\Desktop\ProfUnion\obj\Profunion.csproj.nuget.dgspec.json                                       | JSON       |        161 |          0 |          0 |        161 |
+| c:\Users\Павел\Desktop\ProfUnion\obj\Profunion.csproj.nuget.g.props                                           | MSBuild    |         26 |          0 |          0 |         26 |
+| c:\Users\Павел\Desktop\ProfUnion\obj\Profunion.csproj.nuget.g.targets                                         | MSBuild    |          8 |          0 |          0 |          8 |
+| c:\Users\Павел\Desktop\ProfUnion\obj\project.assets.json                                                      | JSON       |      6,622 |          0 |          0 |      6,622 |
+| Total                                                                                                         |            |      6,914 |         22 |         14 |      6,950 |
++---------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
