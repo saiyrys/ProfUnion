@@ -28,14 +28,10 @@ using Profunion.Services.ReportService;
 
 var builder = WebApplication.CreateBuilder(args);
 
-/*builder.WebHost.ConfigureKestrel(options =>
+builder.WebHost.ConfigureKestrel(options =>
 {
-    options.ListenAnyIP(443, listenOptions =>
-    {
-        listenOptions.UseHttps(); 
-    });
-});*/
-
+    options.ListenAnyIP(5000); // Прокси сервер работает на этом порту
+});
 // Add services to the container.
 builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddTransient<Seed>();
