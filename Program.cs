@@ -1,40 +1,18 @@
 using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Profunion;
-using Profunion.Data;
-using Profunion.Interfaces.EventInterface;
-using Profunion.Interfaces.UserInterface;
-using Profunion.Interfaces.CategoryInterface;
 using Profunion.Services.EventServices;
-using Profunion.Services.UserServices;
 using Profunion.Services.CategoryServices;
 using Profunion.Services.BookingServices;
 using System.Text;
-using Profunion.Interfaces.ApplicationInterface;
-using Profunion.Interfaces;
-using Profunion.Services.AdditionalServices;
-using System.IdentityModel.Tokens.Jwt;
 using Profunion.Services.MailServices;
 using SendGrid;
-using System.Configuration;
-using Profunion.Interfaces.FileInterface;
 using Profunion.Services.FileServices;
-using Microsoft.OpenApi.Models;
-using Profunion.Interfaces.NewsInterface;
 using Profunion.Services.NewsService;
-using Profunion.Interfaces.ReportInterface;
 using Profunion.Services.ReportService;
+using Microsoft.AspNetCore.HttpOverrides;
 
 var builder = WebApplication.CreateBuilder(args);
-
-/*builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenAnyIP(443, listenOptions =>
-    {
-        listenOptions.UseHttps(); 
-    });
-});*/
 
 // Add services to the container.
 builder.Services.AddControllers().AddNewtonsoftJson();
@@ -125,10 +103,14 @@ if (app.Environment.IsDevelopment())
     });
 }
 
+app.UseHttpsRedirection();
 app.UseCors("AllowSpecificOrigins");
 
 app.UseWebSockets();
-app.UseHttpsRedirection();
+app.UseForwardedHeaders(new ForwardedHeadersOptions
+{
+    ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+});
 
 app.UseRouting();
 

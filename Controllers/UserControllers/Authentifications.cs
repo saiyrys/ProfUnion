@@ -191,6 +191,7 @@
         public async Task<IActionResult> logout()
         {
             Response.Cookies.Delete("refreshToken");
+
             return Ok(true); 
         }
     }

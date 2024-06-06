@@ -60,7 +60,7 @@ namespace Profunion.Services.FileServices
             _context.Uploads.Add(uploadedFile);
             await _context.SaveChangesAsync();
 
-            string baseUrl = "http://profunions.ru/api/upload/";
+            string baseUrl = "https://profunions.ru/api/upload/";
             string url = $"{baseUrl}{filename}";
             Uri uri = new Uri(url);
 
@@ -69,7 +69,7 @@ namespace Profunion.Services.FileServices
 
         public async Task DeleteFile(string fileName)
         {
-            string filePath = Path.Combine("http://profunions.ru/api/upload/", fileName);
+            string filePath = Path.Combine("https://profunions.ru/api/upload/", fileName);
 
             var fileToDelete = _context.Uploads.FirstOrDefault(u => u.filePath == filePath);
 

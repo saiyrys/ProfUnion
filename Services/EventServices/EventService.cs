@@ -100,7 +100,7 @@ namespace Profunion.Services.EventServices
             var currentEvent = await _eventsRepository.GetEventsByID(eventId);
 
             if (currentEvent == null)
-                throw new ArgumentException("Ивет не существует");
+                throw new ArgumentException("Ивент не существует");
 
             var eventType = typeof(Event);
             var updateEventType = typeof(UpdateEventDto);

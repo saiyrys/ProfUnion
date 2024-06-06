@@ -9,7 +9,7 @@
         }
         public async Task<ICollection<GetNewsDto>> GetNews()
         {
-            string baseUrl = "http://profunions.ru/api/upload/";
+            string baseUrl = "https://profunions.ru/api/upload/";
 
             var newses = await _context.News
                 .Include(n => n.NewsUploads)

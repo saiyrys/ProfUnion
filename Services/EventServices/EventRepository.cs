@@ -17,7 +17,7 @@ namespace Profunion.Services.EventServices
 
         public async Task<ICollection<GetEventDto>> GetEvents()
         {
-            string baseUrl = "http://profunions.ru/api/upload/";
+            string baseUrl = "https://profunions.ru/api/upload/";
 
             var events = await _context.Events
                 .Include(e => e.EventCategories)
@@ -41,7 +41,7 @@ namespace Profunion.Services.EventServices
                          Url = $"{baseUrl}{_context.Uploads.FirstOrDefault(u => u.id == eu.fileId).fileName}"
                      }).ToList(),
 
-                     categories = e.EventCategories.Select(ec => new Categories { name = ec.Categories.name }).ToList()
+                     categories = e.EventCategories.Select(ec => new Categories { Id = ec.Categories.Id, name = ec.Categories.name }).ToList()
                  }).ToListAsync();
 
             return events;
@@ -88,7 +88,7 @@ namespace Profunion.Services.EventServices
                         else if (type.ToLower() == "desc")
                             query = query.OrderByDescending(e => DateTime.Parse(e.eventDate).Day);
                         break;
-                    case "ticketsCount":
+                    case "tickets":
                         if (type.ToLower() == "asc")
                             query = query.OrderBy(e => e.totalTickets);
                         else if (type.ToLower() == "desc")

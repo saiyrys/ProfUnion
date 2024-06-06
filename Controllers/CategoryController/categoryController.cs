@@ -22,7 +22,7 @@
         }
 
         [HttpGet]
-        [Authorize]
+        /*[Authorize]*/
         [ProducesResponseType(200, Type = typeof(IEnumerable<Categories>))]
         public async Task<IActionResult> GetCategories()
         {
@@ -79,7 +79,7 @@
         }
 
         [HttpDelete("{categoryId}")]
-        [Authorize(Roles = "ADMIN, MODER")]
+/*        [Authorize(Roles = "ADMIN, MODER")]*/
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]

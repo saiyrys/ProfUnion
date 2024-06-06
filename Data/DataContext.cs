@@ -30,8 +30,6 @@
                 entity.HasIndex(u => new { u.userName }).IsUnique();
                 entity.HasIndex(u => new { u.email }).IsUnique();
                 entity.HasIndex(u => new { u.password }).IsUnique();
-                
-
             });
 
             modelBuilder.Entity<Categories>()
@@ -45,7 +43,7 @@
             modelBuilder.Entity<Event>(entity =>
             {
                 entity.HasKey(e => e.eventId);
-                entity.HasIndex(e => e.title) .IsUnique();
+                entity.HasIndex(e => e.title).IsUnique();
                 entity.Ignore(e => e.Categories);
                 entity.Ignore(e => e.Uploads);
             });

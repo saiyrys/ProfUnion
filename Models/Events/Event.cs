@@ -1,4 +1,6 @@
-﻿namespace Profunion.Models.Events
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Profunion.Models.Events
 {
     public class Event
     {
@@ -8,6 +10,7 @@
             updatedAt = DateTime.Now;
         }
         public string eventId { get; set; }
+        [MaxLength(25)]
         public string title { get; set; }
         public string description { get; set; }
         public string organizer { get; set; }

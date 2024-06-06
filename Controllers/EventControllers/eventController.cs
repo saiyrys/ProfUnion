@@ -3,7 +3,6 @@ using Profunion.Dto.EventDto;
 
 namespace Profunion.Controllers.eventControllers
 {
-
     [Route("api/[controller]")]
     [ApiController]
     public class eventController : Controller
@@ -105,8 +104,8 @@ namespace Profunion.Controllers.eventControllers
         }
 
         [HttpDelete("{eventId}")]
-        [Authorize(Roles = "ADMIN, MODER")]
-        [ProducesResponseType(400)]
+/*        [Authorize(Roles = "ADMIN, MODER")]
+*/        [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> DeleteEvents(string eventId)

@@ -105,7 +105,7 @@
             }
 
 
-            await _emailSender.SendMessageAboutApplication(createApplication.userId, createApplication.eventId);
+            /*await _emailSender.SendMessageAboutApplication(createApplication.userId, createApplication.eventId);*/
 
             return Ok("Заявка на мероприятие успешно создана");
 
@@ -146,7 +146,7 @@
                 var createRejected = _mapper.Map<RejectedApplication>(rejectedApplication);
                 // Вызываем метод репозитория для создания отклоненной заявки.
 
-                await _emailSender.SendMessageAboutRejected(rejectedApplication.userId, rejectedApplication.eventId);
+                /*await _emailSender.SendMessageAboutRejected(rejectedApplication.userId, rejectedApplication.eventId);*/
                 var createRejectedResult = await _rejectedAppRepository.CreateRejected(createRejected);
 
                 if (!createRejectedResult)
@@ -182,7 +182,7 @@
                 var createReserv = _mapper.Map<ReservationList>(reservationList);
                 // Вызываем метод репозитория для создания отклоненной заявки.
 
-                await _emailSender.SendMessageAboutApply(reservationList.userId, reservationList.eventId);
+/*                await _emailSender.SendMessageAboutApply(reservationList.userId, reservationList.eventId);*/
                 var createApprovedResult = await _reservationList.CreateReservation(createReserv);
 
                 if (!createApprovedResult)
