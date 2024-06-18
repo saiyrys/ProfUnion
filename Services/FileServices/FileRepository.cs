@@ -67,21 +67,27 @@ namespace Profunion.Services.FileServices
             return (uploadedFile.id,uri.ToString());
         }
 
-        public async Task DeleteFile(string fileName)
+       
+        public async Task DeleteFile(string eventId, string fileId)
         {
-            string filePath = Path.Combine("https://profunions.ru/api/upload/", fileName);
 
-            var fileToDelete = _context.Uploads.FirstOrDefault(u => u.filePath == filePath);
+            var eventUpload = await _context.EventUploads
+               .FirstOrDefaultAsync(eu => eu.eventId == eventId && eu.fileId == fileId);
+            var upload = await _context.Uploads.FirstOrDefaultAsync(u => u.id == fileId);
+
+            var filePath = upload.filePath; 
 
             if (File.Exists(filePath))
             {
                 File.Delete(filePath);
-
-                _context.Uploads.Remove(fileToDelete);
-
-                await _context.SaveChangesAsync();
-
             }
+            if (eventUpload != null)
+            {
+                _context.EventUploads.Remove(eventUpload);
+            }
+            _context.Uploads.Remove(upload);
+
+            await _context.SaveChangesAsync();
         }
 
         public async Task<bool> SaveUploads()

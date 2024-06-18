@@ -38,10 +38,11 @@ namespace Profunion.Services.EventServices
                      images = e.EventUploads.Select(eu => new GetUploadsDto
                      {
                          id = eu.fileId,
+                         name = $"{_context.Uploads.FirstOrDefault(u => u.id == eu.fileId).fileName}",
                          Url = $"{baseUrl}{_context.Uploads.FirstOrDefault(u => u.id == eu.fileId).fileName}"
                      }).ToList(),
 
-                     categories = e.EventCategories.Select(ec => new Categories { Id = ec.Categories.Id, name = ec.Categories.name }).ToList()
+                     categories = e.EventCategories.Select(ec => new Categories { Id = ec.Categories.Id, name = ec.Categories.name, color = ec.Categories.color }).ToList()
                  }).ToListAsync();
 
             return events;
@@ -60,7 +61,7 @@ namespace Profunion.Services.EventServices
 
             if (!string.IsNullOrEmpty(searchString))
             {
-                searchString = searchString.ToLower(); // Преобразуем строку поиска в нижний регистр для удобства сравнения
+                searchString = searchString.ToLower();
 
                 query = query.Where(e =>
                      e.title.ToLower().Contains(searchString) ||
@@ -77,10 +78,8 @@ namespace Profunion.Services.EventServices
                     case "alphabetic":
                         if (type.ToLower() == "asc")
                             query = query.OrderBy(e => e.title);
-                        /*.ThenBy(e => e.description);*/
                         else if (type.ToLower() == "desc")
                             query = query.OrderByDescending(e => e.title);
-                                /*.ThenBy(e => e.description);*/
                         break;
                     case "eventDate":
                         if (type.ToLower() == "asc")

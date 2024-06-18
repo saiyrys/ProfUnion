@@ -1,34 +1,13 @@
-﻿using MySqlX.XDevAPI.Common;
-using Profunion.Dto.EventDto;
-
-namespace Profunion.Controllers.eventControllers
+﻿namespace Profunion.Controllers.eventControllers
 {
     [Route("api/[controller]")]
     [ApiController]
     public class eventController : Controller
     {
-        private readonly IUserRepository _userRepository;
-        private readonly IEventRepository _eventsRepository;
         private readonly IEventService _eventsService;
-        private readonly IFileRepository _fileRepository;
-        private readonly IMapper _mapper;
-        private readonly Helpers _helper;
-        private readonly DataContext _context;
-        public eventController(IEventRepository eventsRepository,
-            IEventService eventsService,
-            IMapper mapper,
-            IFileRepository fileRepository,
-            IUserRepository userRepository,
-            Helpers helper,
-            DataContext context)
+        public eventController(IEventService eventsService)
         {
-            _userRepository = userRepository;
-            _eventsRepository = eventsRepository;
             _eventsService = eventsService;
-            _fileRepository = fileRepository;
-            _mapper = mapper;
-            _helper = helper;
-            _context = context;
         }
 
         [HttpGet]
@@ -54,6 +33,8 @@ namespace Profunion.Controllers.eventControllers
         public async Task<IActionResult> GetEvent(string eventId)
         {
             var events = await _eventsService.GetEventsByID(eventId);
+
+          
 
             return Ok(events);
         }
@@ -93,6 +74,7 @@ namespace Profunion.Controllers.eventControllers
             }
 
             var eventToUpdate = await _eventsService.UpdateEvents(eventId, updateEvent);
+
             if (eventToUpdate)
             {
                 return NoContent(); 
@@ -104,8 +86,8 @@ namespace Profunion.Controllers.eventControllers
         }
 
         [HttpDelete("{eventId}")]
-/*        [Authorize(Roles = "ADMIN, MODER")]
-*/        [ProducesResponseType(400)]
+        [Authorize(Roles = "ADMIN, MODER")]
+        [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> DeleteEvents(string eventId)

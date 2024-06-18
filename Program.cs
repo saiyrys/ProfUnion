@@ -11,6 +11,14 @@ using Profunion.Services.FileServices;
 using Profunion.Services.NewsService;
 using Profunion.Services.ReportService;
 using Microsoft.AspNetCore.HttpOverrides;
+using Profunion.Interfaces.CacheInterface;
+using Profunion.Services.CacheServices;
+using Microsoft.EntityFrameworkCore.Diagnostics;
+using Microsoft.EntityFrameworkCore;
+using Profunion.Services.ReservationServices;
+using Profunion.Services.ApplicationServices;
+using Profunion.Interfaces.ReservationInterface;
+using Profunion.Services.CategoriesServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -19,16 +27,23 @@ builder.Services.AddControllers().AddNewtonsoftJson();
 builder.Services.AddTransient<Seed>();
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<ICacheProvider, CacheMemory>();
 builder.Services.AddScoped<Helpers>();
+builder.Services.AddScoped<CascadeDeleteMethods>();
+builder.Services.AddScoped<ExcelReport>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IAuthentificationsService, AuthentificationsService>();
 builder.Services.AddScoped<INewsRepository, NewsRepository>();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
 builder.Services.AddScoped<ICategoriesRepository, CategoriesRepository>();
+builder.Services.AddScoped<ICategoriesService, CategoriesService>();
 builder.Services.AddScoped<IApplicationRepository, ApplicationRepository>();
+builder.Services.AddScoped<IApplicationService, ApplicationService>();
 builder.Services.AddScoped<IRejectedApplicationRepository, RejectedApplicationRepository>();
 builder.Services.AddScoped<IReservationList, ReservationListRepository>();
+builder.Services.AddScoped<IReservationService, ReservationService>();
 builder.Services.Configure<SendGridClientOptions>(builder.Configuration.GetSection("SendGrid"));
 builder.Services.AddScoped<IEmailSender, EmailSender>();
 builder.Services.AddScoped<IReportRepository, ReportRepository>();
@@ -42,7 +57,7 @@ builder.Services.AddCors(options =>
         policy =>
         {
             policy
-                .WithOrigins("https://localhost:3000","http://localhost:3000", "http://profunions.ru", "https://profunions.ru")
+                .WithOrigins("https://localhost:3000","http://localhost:3000", "http://profunions.ru", "https://profunions.ru", "https://www.profunions.ru")
                 .AllowAnyHeader()
                 .AllowAnyMethod()
                 .AllowCredentials(); 
@@ -55,7 +70,8 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddDbContext<DataContext>(options =>
 {
-    options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection"));
+    options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection"), o => o.UseQuerySplittingBehavior(QuerySplittingBehavior.SplitQuery));
+    options.ConfigureWarnings(warnings => warnings.Throw(RelationalEventId.MultipleCollectionIncludeWarning));
 });
 
 var tokenSettings = builder.Configuration.GetSection("JwtOptions");

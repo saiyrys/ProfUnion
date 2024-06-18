@@ -52,17 +52,29 @@
                             query = query.OrderByDescending(app => app.Event.title);
 /*                                .ThenBy(app => app.Event.description);*/
                         break;
-                    case "createdAt":
+                    case "createdat":
                          if (type.ToLower() == "asc")
-                            query = query.OrderBy(e => e.createdAt.Day);
+                            query = query.OrderBy(e => e.createdAt);
                         else if (type.ToLower() == "desc")
-                            query = query.OrderByDescending(e => e.createdAt.Day);
+                            query = query.OrderByDescending(e => e.createdAt);
                         break;
-                    case "ticketsCount":
-                        if (type.ToLower() == "inc")
+                    case "updatedat":
+                        if (type.ToLower() == "asc")
+                            query = query.OrderBy(e => e.updatedAt);
+                        else if (type.ToLower() == "desc")
+                            query = query.OrderByDescending(e => e.updatedAt);
+                        break;
+                    case "status":
+                        if (type.ToLower() == "asc")
+                            query = query.OrderBy(app => app.status);
+                        else if (type.ToLower() == "desc")
+                            query = query.OrderByDescending(app => app.status);
+                        break;
+                    case "tickets":
+                        if (type.ToLower() == "asc")
                             query = query.OrderBy(app => app.ticketsCount);
-                        else if (type.ToLower() == "dec")
-                            query = query.OrderBy(app => app.ticketsCount);
+                        else if (type.ToLower() == "desc")
+                            query = query.OrderByDescending(app => app.ticketsCount);
                         break;
 
                 }

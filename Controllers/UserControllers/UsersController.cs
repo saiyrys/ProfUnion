@@ -1,5 +1,7 @@
 ﻿using Microsoft.Extensions.Logging;
+using Profunion.Models.Events;
 using Profunion.Services.UserServices;
+using static Microsoft.IO.RecyclableMemoryStreamManager;
 
 namespace Profunion.Controllers.UserControllers
 {
@@ -8,56 +10,33 @@ namespace Profunion.Controllers.UserControllers
     public class UsersController : Controller
     {
         private readonly IUserRepository _userRepository;
-        private readonly IMapper _mapper;
+        private readonly IUserService _userService;
         private readonly Helpers _helper;
-        private readonly HashingPassword _hashingPassword;
-        private readonly DataContext _context;
 
         public UsersController(IUserRepository userRepository,
-            HashingPassword hashingPassword,
-            IMapper mapper,
-            DataContext context,
+            IUserService userService,
             Helpers helper)
             {
             _userRepository = userRepository;
-            _mapper = mapper;
-            _hashingPassword = hashingPassword;
+            _userService = userService;
             _helper = helper;
-            _context = context;
             }
 
         [HttpGet()]
-        [Authorize(Roles = "MODER, ADMIN")]
+/*        [Authorize(Roles = "MODER, ADMIN")]*/
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]
-        public async Task<ActionResult<IEnumerable<User>>> GetUsersByAdmin(int page, string search= null, string sort = null, string type = null)
+        public async Task<ActionResult> GetUsersByAdmin(int page, string search= null, string sort = null, string type = null)
         {
-            int pageSize = 12;
-            var users = await _userRepository.GetUsers();
-
-            if (search != null || sort != null || type != null)
+            var (users, totalPages) = await _userService.GetUsersByAdmin(page, search, sort, type);
+            if (!ModelState.IsValid)
             {
-                users = await _userRepository.SearchAndSortUsers(search, sort, type);
+                return BadRequest(ModelState);
             }
 
-            var userDto = _mapper.Map<List<GetUserDto>>(users);
+            return Ok(new { Items = users, TotalPages = totalPages });
 
-            var pagination = await _helper.ApplyPaginations(userDto, page, pageSize);
-            userDto = pagination.Item1;
-
-            var totalPages = pagination.Item2;
-
-            var result = new
-            {
-                Items = userDto,
-                TotalPages = totalPages,
-            };
-
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
-            return Ok(result);
         }
 
         [HttpGet("profile")]
@@ -116,56 +95,34 @@ namespace Profunion.Controllers.UserControllers
                 lastName = userProfile.lastName,
                 middleName = userProfile.middleName,
                 email = userProfile.email,
-                role = userProfile.role
+                role = userProfile.role,
+                password = userProfile.password
             };
 
             return Ok(profile);
         }
 
         [HttpPatch("{userId}")]
-        [Authorize (Roles = "ADMIN")]
+        [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(400)]
         [ProducesResponseType(204)]
         [ProducesResponseType(404)]
         public async Task<IActionResult> UpdateUser(string userId, [FromBody] UpdateUserDto updateUser)
         {
-            var currentUser = await _userRepository.GetUserByID(userId);
-
-            if (currentUser == null)
-                return NotFound("Пользователь не существует");
-
-            var userType = typeof(User);
-            var updateUserType = typeof(UpdateUserDto);
-
-            foreach (var property in updateUserType.GetProperties())
+            if (updateUser == null)
             {
-                var newValue = property.GetValue(updateUser);
-                if (newValue != null)
-                {
-                    var userProperty = userType.GetProperty(property.Name);
-                    if (userProperty != null && userProperty.CanWrite)
-                    {
-                        userProperty.SetValue(currentUser, newValue);
-                    }
-                }
+                return BadRequest("Пользователь не найден");
             }
 
-            var (hashedPassword, salt) = _hashingPassword.HashPassword(currentUser.password);
-            currentUser.password = hashedPassword;
-
-            var userMap = _mapper.Map<User>(currentUser);
-
-            userMap.password = hashedPassword;
-            userMap.salt = Convert.ToBase64String(salt);
-
-            currentUser.updatedAt = DateTime.UtcNow;
-
-            if (!await _userRepository.UpdateUser(currentUser))
+            var userToUpdate = await _userService.UpdateUsers(userId, updateUser);
+            if (userToUpdate)
             {
-                return BadRequest("Ошибка обновления");
+                return NoContent();
             }
-
-            return NoContent();
+            else
+            {
+                return StatusCode(500);
+            }
         }
 
         [HttpDelete("{userId}")]
@@ -175,18 +132,14 @@ namespace Profunion.Controllers.UserControllers
         [ProducesResponseType(404)]
         public async Task<IActionResult> DeleteUser(string userId)
         {
-            
-            var userToDelete = await _userRepository.GetUserByID(userId);
+            var result = await _userService.DeleteUser(userId);
 
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            await _helper.CascadeDeletedUserContext(userId);
-
-            if (!await _userRepository.DeleteUser(userToDelete))
+            if (!result)
             {
-                ModelState.AddModelError(" ", "Ошибка удаления пользователя");
+                return NotFound("Пользователь не найден");
             }
-            return NoContent();
+
+            return Ok("Пользователь удалён");
         }
     }
 }

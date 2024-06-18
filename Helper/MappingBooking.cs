@@ -12,6 +12,8 @@
 
             CreateMap<Application, GetApplicationDto>();
 
+            CreateMap<Application, GetUserApplicationDto>();
+
 
             CreateMap<UpdateApplicationDto, Application>();
 

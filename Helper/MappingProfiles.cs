@@ -10,8 +10,8 @@
             CreateMap<User, LoginUserDto>();
             CreateMap<LoginUserDto, User>();
 
-            CreateMap<LoginUserDto, UserDto>();
-            CreateMap<UserDto, LoginUserDto>();
+            CreateMap<LoginUserDto, GetUserDto>();
+            CreateMap<GetUserDto, LoginUserDto>();
 
             CreateMap<User, RegisterDto>();
             CreateMap<RegisterDto, User>();

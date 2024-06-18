@@ -59,7 +59,7 @@
                 return BadRequest(ModelState);
 
            /* if (!*/
-            await _fileRepository.DeleteFile(fileInfo);/*)
+            /*await _fileRepository.DeleteFile(fileInfo);*//*)*//*
             {
                 ModelState.AddModelError(" ", "Ошибка удаления файла");
             }*/

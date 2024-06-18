@@ -1,6 +1,7 @@
 ﻿using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Wordprocessing;
 using DocumentFormat.OpenXml;
+using Profunion.Interfaces.ReservationInterface;
 
 namespace Profunion.Services.ReportService
 {

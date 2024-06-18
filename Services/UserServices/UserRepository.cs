@@ -25,59 +25,29 @@ namespace Profunion.Services.UserServices
         {
             return await _context.Users.Where(u => u.userId == ID).FirstOrDefaultAsync();
         }
-
-        public async Task<User> GetUserByUsername(string username)
+        public async Task<User> GetUserInfo(string Token)
         {
-            return await _context.Users.Where(u => u.userName == username).FirstOrDefaultAsync();
-        }
-        public async Task<User> GetUserByRefreshToken(string refreshToken)
-        {
-            if (string.IsNullOrEmpty(refreshToken))
+            if (string.IsNullOrEmpty(Token))
             {
-                throw new ArgumentNullException(nameof(refreshToken));
-            }
-
-            string secretKey = "S19v59LSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS";
-
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var token = tokenHandler.ReadJwtToken(refreshToken);
-            var claims = token.Claims;
-
-            string userID = claims.FirstOrDefault(x => x.Type == "sub")?.Value;
-
-            User userInfo = new User
-            {
-                userId = userID
-            };
-
-            User userProfile = await GetUserByID(userID);
-
-            return userProfile;
-        }
-
-        public async Task<User> GetUserInfo(string accessToken)
-        {
-            if (string.IsNullOrEmpty(accessToken))
-            {
-                throw new ArgumentNullException(nameof(accessToken));
+                throw new ArgumentNullException(nameof(Token));
             }
 
             string secretKey = "S19v59LSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSSS";
 
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            var token = tokenHandler.ReadJwtToken(accessToken);
+            var token = tokenHandler.ReadJwtToken(Token);
 
             var claims = token.Claims;
 
-            string userID = claims.FirstOrDefault(x => x.Type == "nameid")?.Value;
+            string userId = claims.FirstOrDefault(x => x.Type == "nameid" || x.Type == "sub")?.Value;
           
             User userInfo = new User
             {
-                userId = userID
+                userId = userId
             };
 
-            User userProfile = await GetUserByID(userID);
+            User userProfile = await GetUserByID(userId);
 
             return userProfile;
         }
@@ -87,33 +57,14 @@ namespace Profunion.Services.UserServices
             return await _context.Users.OrderBy(u => u.userId).ToListAsync();
         }
 
-        public async Task<ICollection<User>> GetUsersByAdmin(string accessToken)
-        {
-            var userInfo = await GetUserInfo(accessToken);
-
-            var userRole = userInfo.role;
-
-            if (userRole == "ADMIN")
-                return await _context.Users.OrderBy(u => u.userId).ToListAsync();
-
-            return null;
-
-        }
-
         public async Task<ICollection<User>> SearchAndSortUsers(string search = null, string sort = null, string type = null)
         {
             IQueryable<User> query = _context.Users;
 
             if (!string.IsNullOrEmpty(search))
             {
-                search = HttpUtility.UrlDecode(search);
                 search = search.ToLower();
 
-                if (search.StartsWith("пользователь", StringComparison.OrdinalIgnoreCase))
-                {
-                    // Выполняем поиск пользователей с ролью "USER" в английском варианте
-                    query = query.Where(u => u.role.ToLower() == "USER");
-                }
                 query = query.Where(u =>
                 u.userName.ToLower().Contains(search) ||
                 u.firstName.ToLower().Contains(search) ||
@@ -139,21 +90,22 @@ namespace Profunion.Services.UserServices
                         else if (type.ToLower() == "desc")
                             query = query.OrderBy(u => u.role == "ADMIN");
                         break;
-                    case "createdAt":
+                    case "createdat":
                         if (type.ToLower() == "asc")
-                            query = query.OrderBy(u => u.createdAt.Month).ThenBy(u => u.createdAt.Day);
+                            query = query.OrderBy(u => u.createdAt);
                         else if (type.ToLower() == "desc")
-                            query = query.OrderByDescending(u => u.createdAt.Month).ThenBy(u => u.createdAt.Day); ;
+                            query = query.OrderByDescending(u => u.createdAt);
+                        break;
+                    case "updatedat":
+                        if (type.ToLower() == "asc")
+                            query = query.OrderBy(u => u.updatedAt);
+                        else if (type.ToLower() == "desc")
+                            query = query.OrderByDescending(u => u.updatedAt);
                         break;
                 }
             }
 
             return await query.ToListAsync();
-        }
-
-        public async Task<bool> UserExists(string userID)
-        {
-            return await _context.Users.AnyAsync(u => u.userId == userID);
         }
 
         public async Task<bool> CreateUser(User user)
@@ -187,18 +139,6 @@ namespace Profunion.Services.UserServices
 
             return true;
         }
-
-        public Task<bool> logout()
-        {
-            var refreshToken = _httpContextAccessor.HttpContext.Request.Cookies["refreshToken"];
-            if (string.IsNullOrEmpty(refreshToken))
-            {
-                return Task.FromResult(false);
-            }
-           
-            return Task.FromResult(true);
-        }
-
         
     }
 }
