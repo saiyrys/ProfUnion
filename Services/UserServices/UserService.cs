@@ -1,6 +1,4 @@
-﻿using Profunion.Services.UserServices;
-
-namespace Profunion.Services.EventServices
+﻿namespace Profunion.Services.EventServices
 {
     public class UserService : IUserService
     {

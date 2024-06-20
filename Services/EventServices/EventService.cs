@@ -140,12 +140,12 @@ namespace Profunion.Services.EventServices
             {
                 foreach (var uploadId in updateEvent.imagesId)
                 {
-                   
+
                     var eventUpload = await _context.EventUploads.FirstOrDefaultAsync(up => up.eventId == eventId && up.fileId == uploadId);
                     if (eventUpload != null)
                     {
                         _context.EventUploads.Remove(eventUpload);
-                        await _fileRepository.DeleteFile(eventId,uploadId);
+                       /* await _fileRepository.DeleteFile(eventId, uploadId);*/
                     }
                 }
                 _context.EventUploads.RemoveRange(_context.EventUploads.Where(up => up.eventId == eventId));

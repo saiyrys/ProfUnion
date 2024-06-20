@@ -21,9 +21,12 @@ namespace Profunion.Controllers.reportController
             try
             {
                 byte[] reportBytes = await _excelReport.GenerateExcelReport(eventId);
+                var currentEvent = await _eventRepository.GetEventsByID(eventId);
 
+                string eventTitle = currentEvent.title;
+               /* DateTime date = new DateTime*/
                 // Загрузка файла
-                string fileName = $"Отчёт.xlsx";
+                string fileName = $"Отчёт по мероприятию {eventTitle} {DateTime.Now}.xlsx";
 
                 return File(reportBytes, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", fileName);
             }

@@ -23,25 +23,29 @@ namespace Profunion.Services.ReportService
 
             using (ExcelPackage package = new ExcelPackage())
             {
-                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add($"Отчёт по мероприятию {currentEvent.Select(e => e.title)}");
+                string eventTitle = currentEvent.First().title;
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add($"Отчёт по мероприятию {eventTitle}");
 
                 worksheet.Column(1).Width = 18.57;
                 worksheet.Column(2).Width = 18.57;
+                worksheet.Column(3).Width = 18.57;
+                worksheet.Column(4).Width = 18.57;
+                worksheet.Column(5).Width = 18.57;
 
                 worksheet.Cells[1, 1].Value = "Организатор";
-                worksheet.Cells[3, 1].Value = "Дата проведения";
-                worksheet.Cells[5, 1].Value = "Мероприятие";
-                worksheet.Cells[7, 1].Value = "Категории";
-                worksheet.Cells[9, 1].Value = "Кол-во участников";
+                worksheet.Cells[1, 2].Value = "Дата проведения";
+                worksheet.Cells[1, 3].Value = "Мероприятие";
+                worksheet.Cells[1, 4].Value = "Категории";
+                worksheet.Cells[1, 5].Value = "Кол-во участников";
 
-                
-                for(int i = 0; i < currentEvent.Count; i++)
+
+                for (int i = 0; i < currentEvent.Count; i++)
                 {
-                    worksheet.Cells[1, 2 + i].Value = currentEvent[i].organizer; // Организатор
-                    worksheet.Cells[3, 2 + i].Value = currentEvent[i].eventDate; // Дата проведения
-                    worksheet.Cells[5, 2 + i].Value = currentEvent[i].title; // Мероприятие
-                    worksheet.Cells[7, 2 + i].Value = string.Join(", ", currentEvent[i].categories.Select(c => c.name)); // Категории
-                    worksheet.Cells[9, 2 + i].Value = membersOfEvent.Count();
+                    worksheet.Cells[2 + i, 1].Value = currentEvent[i].organizer; // Организатор
+                    worksheet.Cells[2 + i, 2].Value = currentEvent[i].eventDate; // Дата проведения
+                    worksheet.Cells[2 + i, 3].Value = currentEvent[i].title; // Мероприятие
+                    worksheet.Cells[2 + i, 4].Value = string.Join(", ", currentEvent[i].categories.Select(c => c.name)); // Категории
+                    worksheet.Cells[2 + i, 5].Value = membersOfEvent.Count(); // Кол-во участников
                 }
 
                 return package.GetAsByteArray();

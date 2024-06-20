@@ -54,23 +54,23 @@ namespace Profunion.Services.ReservationServices
 
         public async Task<(IEnumerable<GetReservationDto> reservations, int totalTickets)> GetUserReservation(string userId)
         {
-            var reservations = _mapper.Map<List<GetReservationDto>>(await _reservationList.GetAllReservation());
+            var allReservations = await _reservationList.GetAllReservation();
+            var reservations = _mapper.Map<List<GetReservationDto>>(allReservations);
 
             // Фильтруем резервации только для указанного пользователя
             var userReservations = reservations.Where(r => r.userId == userId).ToList();
 
             var eventsWithCategories = await _eventRepository.GetEvents();
 
-            foreach (var reservation in reservations)
+            foreach (var reservation in userReservations)
             {
-                var events = await _eventRepository.GetEvents();
-                var currentEvents = events.Where(e => e.eventId == reservation.eventId).FirstOrDefault();
-
-                reservation.events = currentEvents;
+                var currentEvent = eventsWithCategories.FirstOrDefault(e => e.eventId == reservation.eventId);
+                reservation.events = currentEvent;
             }
-            int totalTickets = userReservations.Select(r => r.ticketsCount).FirstOrDefault();
 
-            return (reservations, totalTickets);
+            int totalTickets = userReservations.Sum(r => r.ticketsCount);
+
+            return (userReservations, totalTickets);
         }
 
         public async Task<UpdateReservationDto> UpdateReservation(string Id, UpdateReservationDto updateReservation)
