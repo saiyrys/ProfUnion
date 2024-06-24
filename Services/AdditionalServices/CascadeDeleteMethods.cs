@@ -70,15 +70,24 @@ namespace Profunion.Services.AdditionalServices
         {
             try
             {
-                var eventToDelete = await _context.Events.Include(e => e.EventCategories)
-                .FirstOrDefaultAsync(e => e.EventCategories.Any(ec => ec.CategoriesId == categoryId));
+                var eventsToDelete = await _context.Events.Include(e => e.EventCategories)
+                .Where(e => e.EventCategories.Any(ec => ec.CategoriesId == categoryId)).ToListAsync();
 
-                if (eventToDelete != null)
+                foreach (var eventToDelete in eventsToDelete)
                 {
-                    _context.Events.RemoveRange(eventToDelete);
-                    await CascadeDeletedEventContext(eventToDelete.eventId);
-                }
+                    var countCategories = eventToDelete.EventCategories.Count;
 
+                    if (countCategories == 1)
+                    {
+                        _context.Events.RemoveRange(eventToDelete);
+                        await CascadeDeletedEventContext(eventToDelete.eventId);
+                    }
+                    else
+                    {
+                        var EventsCategoriesToDelete = await _context.EventCategories.Where(ec => ec.CategoriesId == categoryId).ToListAsync();
+                        _context.EventCategories.RemoveRange(EventsCategoriesToDelete);
+                    } 
+                }
                 return true;
             }
             catch (Exception ex)

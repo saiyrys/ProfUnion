@@ -29,7 +29,7 @@ namespace Profunion.Controllers.ReservationListControllers
         }
 
         [HttpGet("{userId}")]
-/*        [Authorize]*/
+        [Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetReservation(string userId)
         {

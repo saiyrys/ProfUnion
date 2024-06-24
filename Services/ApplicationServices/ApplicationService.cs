@@ -14,14 +14,16 @@ namespace Profunion.Services.ApplicationServices
         private readonly IUserRepository _userRepository;
         private readonly IMapper _mapper;
         private readonly Helpers _helper;
+        private readonly DataContext _context;
         public ApplicationService(IApplicationRepository applicationRepository,
             IUserRepository userRepository,
             IMapper mapper,
             IEventRepository eventRepository,
             IReservationList reservationList,
             IRejectedApplicationRepository rejected,
-            Helpers helper, 
-            IEmailSender emailSender)
+            Helpers helper,
+            IEmailSender emailSender,
+            DataContext context)
         {
             _applicationRepository = applicationRepository;
             _eventRepository = eventRepository;
@@ -31,6 +33,7 @@ namespace Profunion.Services.ApplicationServices
             _mapper = mapper;
             _helper = helper;
             _emailSender = emailSender;
+            _context = context;
         }
         public async Task<(IEnumerable<GetApplicationDto>, int TotalPages)> GetApplication(int page, string search = null, string sort = null, string type = null)
         {
@@ -83,14 +86,17 @@ namespace Profunion.Services.ApplicationServices
         {
             var appMap = _mapper.Map<Application>(createApplication);
 
+            var user = await _userRepository.GetUserByID(createApplication.userId);
+
             if (appMap.status != "REJECTED" || appMap.status != "APPROVED")
                 appMap.status = "PENDING";
 
             if (!await _applicationRepository.CreateApplication(appMap))
             {
-                throw new ArithmeticException();
+               throw new ArgumentException();
             }
 
+           /* await _emailSender.SendMessageAboutApplication(user.userId, createApplication.eventId);*/
             return true;
         }
 
@@ -105,11 +111,11 @@ namespace Profunion.Services.ApplicationServices
             if(updateApplication.status == "APPROVED")
             {
                 return await CreateReservation(application);
-
             }
 
             if (updateApplication.status == "REJECTED")
             {
+
                 return await CreateRejected(application);
             }
 
@@ -137,15 +143,15 @@ namespace Profunion.Services.ApplicationServices
 
             var createReservation = _mapper.Map<ReservationList>(reservationList);
 
-            if (await _reservationList.CreateReservation(createReservation))
+            if (!await _reservationList.CreateReservation(createReservation))
             {
-                return true;
-
+                throw new ArgumentNullException();  
             }
 
-            await _emailSender.SendMessageAboutApply(reservationList.userId, reservationList.eventId);
-            
-            throw new ArgumentNullException();            
+            /*await _emailSender.SendMessageAboutApply(reservationList.userId, reservationList.eventId);*/
+            return true;
+
+                     
         }
         private async Task<bool> CreateRejected(Application application)
         {
@@ -158,12 +164,13 @@ namespace Profunion.Services.ApplicationServices
             };
             var createRejected = _mapper.Map<RejectedApplication>(rejectedApplication);
 
-            if (await _rejected.CreateRejected(createRejected))
+            if (!await _rejected.CreateRejected(createRejected))
             {
-                return true;
+                throw new ArgumentNullException();
             }
-            await _emailSender.SendMessageAboutRejected(rejectedApplication.userId, rejectedApplication.eventId);
-            throw new ArgumentNullException();
+                        
+           /* await _emailSender.SendMessageAboutRejected(rejectedApplication.userId, rejectedApplication.eventId);*/
+            return true;
         }
     }
 }

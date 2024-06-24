@@ -10,6 +10,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="bin\Debug\net7.0\logo-profsouz-kst.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />
     <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
     <PackageReference Include="DocumentFormat.OpenXml" Version="3.0.2" />
@@ -53,6 +57,7 @@
 
   <ItemGroup>
     <Folder Include="Models\MailModels\" />
+    <Folder Include="Resources\" />
     <Folder Include="Uploads\" />
   </ItemGroup>
 

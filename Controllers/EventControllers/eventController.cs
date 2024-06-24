@@ -64,7 +64,7 @@
         }
 
         [HttpPatch("{eventId}")]
-/*        [Authorize(Roles = "ADMIN, MODER")]*/
+        [Authorize(Roles = "ADMIN, MODER")]
         [ProducesResponseType(204)]
         public async Task<IActionResult> UpdateEvents(string eventId, [FromBody] UpdateEventDto updateEvent)
         {

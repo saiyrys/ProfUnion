@@ -20,7 +20,7 @@
 
 
         [HttpPost("register")]
-/*        [Authorize(Roles = "ADMIN")]*/
+        [Authorize(Roles = "ADMIN")]
         [ProducesResponseType(204)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]

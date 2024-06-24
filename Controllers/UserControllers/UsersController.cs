@@ -23,7 +23,7 @@ namespace Profunion.Controllers.UserControllers
             }
 
         [HttpGet()]
-/*        [Authorize(Roles = "MODER, ADMIN")]*/
+        [Authorize(Roles = "MODER, ADMIN")]
         [ProducesResponseType(200)]
         [ProducesResponseType(400)]
         [ProducesResponseType(404)]

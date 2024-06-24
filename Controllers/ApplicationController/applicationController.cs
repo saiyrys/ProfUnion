@@ -1,4 +1,7 @@
-﻿namespace Profunion.Controllers.ApplicationController
+﻿using DocumentFormat.OpenXml.Spreadsheet;
+using Profunion.Models.UserModels;
+
+namespace Profunion.Controllers.ApplicationController
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -8,17 +11,20 @@
         private readonly IRejectedApplicationRepository _rejectedAppRepository;
         private readonly IApplicationService _applicationService;
         private readonly IMapper _mapper;
+        private readonly IEmailSender _emailSender;
 
         public applicationController(IApplicationRepository applicationRepository,
             IRejectedApplicationRepository rejectedAppRepository,
             IApplicationService applicationService,
-            IMapper mapper)
+            IMapper mapper,
+            IEmailSender emailSender)
         {
 
             _applicationRepository = applicationRepository;
             _rejectedAppRepository = rejectedAppRepository;
             _applicationService = applicationService;
             _mapper = mapper;
+            _emailSender = emailSender;
         }
 
         [HttpGet]
@@ -45,7 +51,6 @@
 
             await _applicationService.CreateApplication(createApplication);
 
-            /*await _emailSender.SendMessageAboutApplication(createApplication.userId, createApplication.eventId);*/
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
@@ -72,7 +77,7 @@
         }
 
         [HttpGet("{userId}")]
-/*        [Authorize]*/
+        [Authorize]
         [ProducesResponseType(200)]
         public async Task<IActionResult> GetUserApplication(string userId)
         {
